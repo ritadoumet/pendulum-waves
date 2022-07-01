@@ -22,7 +22,7 @@
 #define R 15.0 // Radius of circles
 #define N 15 // Number of pendulums
 #define x0 screenWidth/2 // X dimension of the center of the first circle (from left to right)
-#define speed 3.0 //speed of the pendulum
+#define speed 3.0 //speed of the animation
 
 using namespace std;
 
@@ -73,26 +73,27 @@ void displayText() {
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT); //clear display window
-	glColor3f(1.0, 1.0, 1.0); //set line segment color to green
 	displayText();
 	glBegin(GL_LINES);
 	for (int i = 0; i < N; i++) {
+		glColor3f(0.3, 0.3, 0.3);
 		glVertex2i(pendulums[i].centerX, pendulums[i].centerY);
-		glVertex2i(x0, screenHeight);
+		glColor3f(1.0, 1.0, 1.0); //set line segment color to white
+		glVertex2i(x0, screenHeight );
 	}
 	glEnd();
 
 	for (int i = 0; i < N; i++) {
 		GLfloat t = 0.0; //t is the current angle we are drawing, in radians
 		GLfloat c = 0.0; //color
-		GLint min = pendulums[i].theta * 180 / PI;
+		GLint min = pendulums[i].theta * 180 / PI +90;  // effect: gradient
 		GLint max = min + 360;
 		//min and max are calculated for the sake of an accurate gradient color on the moving object
 
 		glBegin(GL_POLYGON);
 		for (int j = min; j < max; j++) {
 			t = j * PI / 180;
-			c = 1.0 * j / 360; // effect: gradient
+			c = 1.0 * j / 360;
 			glColor3f(c, c, c);
 			glVertex2i(cos(t) * R + pendulums[i].centerX, sin(t) * R + pendulums[i].centerY);
 			//formula: calculating the x and y coordinates of the next vertex to add to the polygon
