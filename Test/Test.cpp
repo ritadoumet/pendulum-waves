@@ -7,7 +7,7 @@
 // as well as formulas for the Law of Conservation of Momentum.
 // 
 // Feel free to edit some of the constants defined below (such as: L, thetaMax, R, N, x0, speed, etc.) to see what happens.
-
+// Also, press the Up and Down arrow keys on the keyboard to see what happens.
 
 #include <GL/glut.h>
 #include <GL/glu.h>
@@ -19,10 +19,11 @@
 #define screenWidth 800.0
 #define screenHeight 700.0
 #define thetaMax 30.0*PI/180.0 // Maximum angle (radians)
-#define R 15.0 // Radius of circles
+
 #define N 15 // Number of pendulums
 #define x0 screenWidth/2 // X dimension of the center of the first circle (from left to right)
-#define speed 3.0 //speed of the animation
+int speed = 5.0; //speed of the animation
+int R = 15.0; // Radius of circles
 
 using namespace std;
 
@@ -65,10 +66,24 @@ void init(void) {
 }
 
 void displayText() {
+	//credits
 	string text = "Coded by Rita DOUMET & Christian RECHDAN, 2022.";
 	glRasterPos2i(50, 50);
 	for (int i = 0; i < text.size(); i++)
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, text[i]);
+		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, text[i]);
+
+	//instructions
+	string instructions = "UP, DOWN arrows: change speed";
+	glRasterPos2i(50, 120);
+	for (int i = 0; i < instructions.size(); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, instructions[i]);
+	}
+
+	instructions = "LEFT, RIGTH arrows: change size.";
+	glRasterPos2i(50, 100);
+	for (int i = 0; i < instructions.size(); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, instructions[i]);
+	}
 }
 
 void display(void) {
@@ -130,6 +145,30 @@ void reshape(int w, int h) {
 	gluOrtho2D(0, screenWidth, 0, screenHeight);
 	glMatrixMode(GL_MODELVIEW);
 }
+void myKeyboard(int theKey, int mouseX, int mouseY) {
+	switch (theKey) {
+	case GLUT_KEY_UP: 
+		if (speed < 10)
+			speed++;
+		cout << "Speed: "<<speed << endl;
+		break;
+	case GLUT_KEY_DOWN:
+		if (speed > 0)
+			speed--;
+		cout << "Speed: "<<speed << endl;
+		break;
+	case GLUT_KEY_RIGHT:
+		if (R < 30.0)
+			R++;
+		cout << "Radius: " << R << endl;
+		break;
+	case GLUT_KEY_LEFT:
+		if (R > 5.0)
+			R--;
+		cout << "Radius: " << R << endl;
+		break;
+	}
+}
 void main(int argc, char** argv) {
 	glutInit(&argc, argv); //initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //set display mode; DOUBLE for animation
@@ -141,6 +180,7 @@ void main(int argc, char** argv) {
 
 	glutDisplayFunc(display); //send graphics to display window
 	glutReshapeFunc(reshape);
+	glutSpecialFunc(myKeyboard); //for up, down, left, right arrow key presses
 	glutTimerFunc(0, timer, 0);
 	glutMainLoop(); //display everything and wait
 }
